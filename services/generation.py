@@ -1,6 +1,5 @@
 import openai
-import os
-from coverletter.shemas.coverletter import CreateCoverLetterSchema, CoverLetterSchema, Tone, Language
+from shemas.coverletter import CreateCoverLetterSchema, CoverLetterSchema, Tone, Language
 # os get env
 openai.api_key = "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"
 

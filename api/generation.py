@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from coverletter.services.generation import generate_cover_letter, generate_dummy_cover_letter
-from coverletter.shemas.coverletter import CreateCoverLetterSchema
+from services.generation import generate_cover_letter, generate_dummy_cover_letter
+from shemas.coverletter import CreateCoverLetterSchema
 
 router = APIRouter(
     prefix="/generation",

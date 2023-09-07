@@ -1,21 +1,44 @@
-from sqlalchemy import select
+from typing import Sequence
+
+from sqlalchemy import select, delete
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from coverletter.models.users import User
+from models.users import User
+from shemas.users import UserSchema
 
 
-def get_users(session: Session) -> list[User]:
+class UserAlreadyExists(Exception):
+    pass
+
+
+def get_all_users(session: Session) -> Sequence[User]:
     stmt = session.scalars(select(User)).all()
     return stmt
 
 
-def get_user(session: Session, id: int | None=None, name: str | None=None, email: str | None=None, credits: int | None=None):
-    pass
+def get_user(session: Session, id: int | None = None, name: str | None = None, email: str | None = None):
+    stmt = select(User)
+    if id is not None:
+        stmt = stmt.filter_by(id=id)
+    if name is not None:
+        stmt = stmt.filter_by(name=name)
+    if email is not None:
+        stmt = stmt.filter_by(email=email)
+    try:
+        return session.scalars(stmt).one()
+    except NoResultFound:
+        return False
 
 
-def upsert_user(session: Session):
-    pass
+def upsert_user(session: Session, user_schema: UserSchema):
+    if not get_user(session, user_schema.id):
+        user = User(**user_schema.dict())
+        session.add(user)
+        return user
 
 
-def remove_user(session: Session):
-    pass
+def remove_user(session: Session, id: int) -> None:
+    if get_user(session, id):
+        stmt = delete(User).where(User.id == id)
+        session.execute(stmt)

@@ -1,8 +1,7 @@
-from io import BytesIO
 
 from fastapi import APIRouter, UploadFile
 
-from coverletter.services.parsing import extract_text_from_pdf
+from services.parsing import extract_text_from_pdf
 
 router = APIRouter(
     prefix="/parsing",
