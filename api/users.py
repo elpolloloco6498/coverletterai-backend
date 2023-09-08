@@ -25,7 +25,7 @@ def get_all(session: Session = Depends(get_db)) -> list[UserSchema]:
 
 
 @router.get("/user/{user_id}")
-def get(user_id: int, session: Session = Depends(get_db)):
+def get(user_id: str, session: Session = Depends(get_db)):
     user = get_user(session, id=user_id)
     if user:
         return UserSchema(id=user.id, name=user.name, email=user.email, credits=user.credits)
@@ -40,7 +40,7 @@ def upsert(upsert_user_schema: UserSchema, session: Session = Depends(get_db)):
 
 
 @router.get("/remove/{user_id}")
-def remove(user_id: int, session: Session = Depends(get_db)):
+def remove(user_id: str, session: Session = Depends(get_db)):
     user = get_user(session, id=user_id)
     remove_user(session, user_id)
     session.commit()

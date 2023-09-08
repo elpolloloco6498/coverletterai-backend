@@ -17,7 +17,7 @@ def get_all_users(session: Session) -> Sequence[User]:
     return stmt
 
 
-def get_user(session: Session, id: int | None = None, name: str | None = None, email: str | None = None):
+def get_user(session: Session, id: str | None = None, name: str | None = None, email: str | None = None):
     stmt = select(User)
     if id is not None:
         stmt = stmt.filter_by(id=id)
@@ -38,7 +38,7 @@ def upsert_user(session: Session, user_schema: UserSchema):
         return user
 
 
-def remove_user(session: Session, id: int) -> None:
+def remove_user(session: Session, id: str) -> None:
     if get_user(session, id):
         stmt = delete(User).where(User.id == id)
         session.execute(stmt)

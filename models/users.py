@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "Users"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[str] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255))
     email: Mapped[str] = mapped_column(String(255))
     credits: Mapped[int] = mapped_column(Integer)
