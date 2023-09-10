@@ -13,11 +13,11 @@ jobs:
     - name: Deploy project
       uses: appleboy/ssh-action@v0.1.10
       with:
-        host: 134.209.90.164
-        username: root
-        key: tx7tkFffXEBdx!M
-        port: 22
+        host: ${{secrets.SSH_HOST}}
+        username: ${{secrets.USER}}
+        key: ${{secrets.KEY}}
+        port: ${{secrets.PORT}}
         command_timeout: 200m
-        script: | 
+        script: |
           echo "Nice Job!!!"
           touch test_file
