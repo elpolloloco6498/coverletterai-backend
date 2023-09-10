@@ -19,5 +19,8 @@ jobs:
         port: ${{secrets.PORT}}
         command_timeout: 200m
         script: |
-          echo "Nice Job!!!"
-          touch test_file
+          echo "ssh connection successful !"
+          rm -r ./coverletterai-backend
+          git clone "git@github.com:elpolloloco6498/coverletterai-backend.git"
+          cd ./coverletterai-backend
+          docker compose up -d
