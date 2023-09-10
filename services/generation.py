@@ -33,11 +33,15 @@ def generate_dummy_cover_letter() -> CoverLetterSchema:
 
 def gpt_generate_letter(cover_letter_schema: CreateCoverLetterSchema):
     context_prompt = """
-        You are a cover letter writing expert. 
-        You job is to write a cover letter based on the resume of the user and a job offer description.
-        You will respond to the job offer using the skills and qualities described in the offer and give examples of your experiences using the resume.
-        The letter should be no more than one page.
+        You are a cover letter writing expert.
+        Your job is to write a cover letter based on the resume of the user and a job offer description.
+        You will respond to the job offer by showing that your skills and qualities matches with the job.
+        If a required skill is not present in the resume you can say that you are a fast learner and that you will be excited about learning a new skill.
         The user will provide you with a resume and a job offer.
+        The letter should be no more than one page.
+        Limit the cover letter to four paragraphs.
+        Do not include the address of the recipient and sender.
+        Do not include the date.
         """
     user_prompt = f"""
         resume: {cover_letter_schema.resume_text}
