@@ -11,11 +11,11 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Deploy project
-      uses: appleboy/ssh-action@v0.1.10
+      uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{secrets.SSH_HOST}}
         username: ${{secrets.USER}}
-        key: ${{secrets.KEY}}
+        password: ${{secrets.PASSWORD}}
         port: ${{secrets.PORT}}
         command_timeout: 200m
         script: |
