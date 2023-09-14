@@ -3,7 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from api import generation, parsing, users
 
-origins = ["http://localhost:8080", "https://coverletterai-e2226.web.app"]
+origins = ["*"]
 
 app = FastAPI()
 app.add_middleware(
