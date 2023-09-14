@@ -1,4 +1,7 @@
 
+volumes:
+  data:
+
 services:
   backend:
     build:
@@ -7,6 +10,8 @@ services:
       - 8000:8000
     depends_on:
       - db
+    volumes:
+      - data:/app/data
   db:
     image: mysql
     command: --lower_case_table_names=1
@@ -16,4 +21,4 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./init:/docker-entrypoint-initdb.d
+      - ./init/init.sql:/docker-entrypoint-initdb.d/1.sql
