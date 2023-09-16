@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from api import generation, parsing, users
+from api import generation, parsing, users, payment
 
 origins = ["*"]
 
@@ -17,6 +17,7 @@ app.add_middleware(
 app.include_router(generation.router)
 app.include_router(parsing.router)
 app.include_router(users.router)
+app.include_router(payment.router)
 
 
 
