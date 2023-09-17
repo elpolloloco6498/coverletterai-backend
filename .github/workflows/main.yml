@@ -9,7 +9,6 @@ jobs:
     steps:
     - name: checkout project
       uses: actions/checkout@v2
-
     - name: Deploy project
       uses: appleboy/ssh-action@v1.0.0
       with:
@@ -20,8 +19,9 @@ jobs:
         command_timeout: 200m
         script: |
           echo "ssh connection successful !"
-          docker compose down
+          docker compose stop
           rm -r ./coverletterai-backend
           git clone "git@github.com:elpolloloco6498/coverletterai-backend.git"
           cd ./coverletterai-backend
-          docker compose up -d
+          docker compose up --force-recreate --build -d
+          docker image prune -f

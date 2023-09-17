@@ -12,6 +12,7 @@ services:
       - db
     volumes:
       - db-data:/app/data
+    restart: always
   db:
     image: mysql
     command: --lower_case_table_names=1
@@ -23,3 +24,4 @@ services:
     volumes:
       - ./init/init.sql:/docker-entrypoint-initdb.d/1.sql
       - db-data:/app/data
+    restart: always
