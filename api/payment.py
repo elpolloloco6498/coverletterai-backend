@@ -1,11 +1,10 @@
-from typing import Any
 
-from fastapi import APIRouter, UploadFile, Body
+from fastapi import APIRouter
 from starlette.requests import Request
-from starlette.responses import RedirectResponse
 
-from services.parsing import extract_text_from_pdf
 import stripe
+
+from shemas.product import ProductSchema
 
 stripe.api_key = 'sk_test_51Nqvj5EJAnEEoeUjoBc4MyFufOsTDGu7v8meUImAU0vXmc5uB1UcSJUSXCdO6xX6PpRRZ3DnYpqpqdLNZmA5ownP00aap3cXp8'
 
@@ -15,15 +14,21 @@ router = APIRouter(
 
 YOUR_DOMAIN = 'http://localhost:4200'
 
+product_prices = {
+    "product1": "price_1NrHP9EJAnEEoeUjx3ndzZ8Z",
+    "product2": "price_1NqvpcEJAnEEoeUjktOzZrIr",
+    "product3": "price_1NrHPrEJAnEEoeUjI32rFMbs",
+}
+
 
 @router.post("/create-checkout-session")
-def create_checkout_session():
+def create_checkout_session(product_schema: ProductSchema) -> str:
     try:
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price': 'price_1NqvpcEJAnEEoeUjktOzZrIr',
+                    'price': product_prices[product_schema.id],
                     'quantity': 1,
                 },
             ],
@@ -34,7 +39,7 @@ def create_checkout_session():
     except Exception as e:
         return str(e)
 
-    return RedirectResponse(checkout_session.url)
+    return checkout_session.url
 
 
 @router.post("/webhook")
@@ -53,9 +58,9 @@ async def webhook(request: Request):
     except ValueError as e:
         # Invalid payload
         raise e
-    # except stripe.error.SignatureVerificationError as e:
-    #     # Invalid signature
-    #     raise e
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        raise e
     #
     # # Handle the event
     # if event['type'] == 'payment_intent.succeeded':
