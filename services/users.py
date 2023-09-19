@@ -42,3 +42,21 @@ def remove_user(session: Session, id: str) -> None:
     if get_user(session, id):
         stmt = delete(User).where(User.id == id)
         session.execute(stmt)
+
+
+def update_user_credit(session: Session, user_id, amount) -> None:
+    session.query(User).filter(User.id == user_id).update({"credits": amount})
+
+
+def add_user_credit(session: Session, user_id, amount) -> None:
+    user_credits = get_user(session, user_id).credits
+    update_user_credit(session, user_id, user_credits + amount)
+
+
+def supply_credits(session: Session, user_id, product_id) -> None:
+    product_credits = {
+        "product1": 5,
+        "product2": 10,
+        "product3": 20,
+    }
+    add_user_credit(session, user_id, product_credits[product_id])
