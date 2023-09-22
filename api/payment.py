@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 
 import stripe
+from starlette.responses import Response
 
 from api.users import get_db
 from services.users import supply_credits
@@ -40,12 +41,11 @@ def create_checkout_session(metadata_schema: CheckoutMetadataSchema) -> str:
             cancel_url=YOUR_DOMAIN + '?canceled=true',
             payment_intent_data={
                 "metadata": {
-                    "user_id": 1234,
+                    "user_id": metadata_schema.user_id,
                     "product_id": metadata_schema.product_id,
                 }
             }
         )
-        print(checkout_session)
     except Exception as e:
         return str(e)
 
@@ -67,20 +67,16 @@ async def webhook(request: Request, session: Session = Depends(get_db)):
         )
 
     except ValueError as e:
-        # Invalid payload
-        raise e
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        raise e
+        return {"error": str(e)}
 
     # Handle the event
     if event.type == 'payment_intent.succeeded':
         payment_intent = event.data.object
         metadata = payment_intent.metadata
-        print(metadata)
         supply_credits(session, metadata.user_id, metadata.product_id)
+        print("payment intent success event")
     else:
         print('Unhandled event type {}'.format(event['type']))
     session.commit()
 
-    # return jsonify(success=True)
+    return {"status": "success"}

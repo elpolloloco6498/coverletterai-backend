@@ -17,7 +17,7 @@ def get_all_users(session: Session) -> Sequence[User]:
     return stmt
 
 
-def get_user(session: Session, id: str | None = None, name: str | None = None, email: str | None = None):
+def get_user(session: Session, id: str | None = None, name: str | None = None, email: str | None = None) -> User | bool:
     stmt = select(User)
     if id is not None:
         stmt = stmt.filter_by(id=id)
