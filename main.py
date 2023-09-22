@@ -5,7 +5,7 @@ from api import generation, parsing, users, payment
 
 origins = ["*"]
 
-app = FastAPI()
+app = FastAPI(debug=True)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
 
-class ProductSchema(BaseModel):
-    id: str
+class CheckoutMetadataSchema(BaseModel):
+    product_id: str
+    user_id: str

@@ -7,7 +7,7 @@ import stripe
 
 from api.users import get_db
 from services.users import supply_credits
-from shemas.product import ProductSchema
+from shemas.product import ProductSchema, CheckoutMetadataSchema
 
 stripe.api_key = 'sk_test_51Nqvj5EJAnEEoeUjoBc4MyFufOsTDGu7v8meUImAU0vXmc5uB1UcSJUSXCdO6xX6PpRRZ3DnYpqpqdLNZmA5ownP00aap3cXp8'
 
@@ -25,25 +25,27 @@ product_prices = {
 
 
 @router.post("/create-checkout-session")
-def create_checkout_session(product_schema: ProductSchema) -> str:
+def create_checkout_session(metadata_schema: CheckoutMetadataSchema) -> str:
     # TODO add user_id in the schema
     try:
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
-                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price': product_prices[product_schema.id],
+                    'price': product_prices[metadata_schema.product_id],
                     'quantity': 1,
                 },
             ],
             mode='payment',
             success_url=YOUR_DOMAIN + '/payment-success',
             cancel_url=YOUR_DOMAIN + '?canceled=true',
-            metadata={
-                "user_id": "12345",
-                "product_id": product_schema.id
+            payment_intent_data={
+                "metadata": {
+                    "user_id": 1234,
+                    "product_id": metadata_schema.product_id,
+                }
             }
         )
+        print(checkout_session)
     except Exception as e:
         return str(e)
 
@@ -63,6 +65,7 @@ async def webhook(request: Request, session: Session = Depends(get_db)):
             sig_header=sig_header,
             secret=webhook_secret
         )
+
     except ValueError as e:
         # Invalid payload
         raise e
@@ -75,9 +78,7 @@ async def webhook(request: Request, session: Session = Depends(get_db)):
         payment_intent = event.data.object
         metadata = payment_intent.metadata
         print(metadata)
-        print(payment_intent)
-        print("Payment successful !")
-        # supply_credits(metadata.user_id, metadata.product_id)
+        supply_credits(session, metadata.user_id, metadata.product_id)
     else:
         print('Unhandled event type {}'.format(event['type']))
     session.commit()
