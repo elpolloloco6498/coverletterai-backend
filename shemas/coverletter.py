@@ -22,6 +22,7 @@ class CoverLetterSchema(BaseModel):
 
 
 class CreateCoverLetterSchema(BaseModel):
+    user_id: str
     resume_text: str
     job_text: str
     tone: Tone | None

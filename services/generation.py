@@ -1,4 +1,7 @@
 import openai
+from sqlalchemy.orm import Session
+
+from services.users import get_user, add_user_credit
 from shemas.coverletter import CreateCoverLetterSchema, CoverLetterSchema, Tone, Language
 # os get env
 openai.api_key = "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"
@@ -59,10 +62,15 @@ def gpt_generate_letter(cover_letter_schema: CreateCoverLetterSchema):
     return response["choices"][0]["message"]["content"]
 
 
-def generate_cover_letter(cover_letter_schema: CreateCoverLetterSchema):
-    cover_letter_text = gpt_generate_letter(cover_letter_schema)
-    return CoverLetterSchema(
-        text=cover_letter_text,
-        tone=cover_letter_schema.tone,
-        language=cover_letter_schema.language,
-    )
+def generate_cover_letter(session: Session, cover_letter_schema: CreateCoverLetterSchema):
+    user = get_user(session, id=cover_letter_schema.user_id)
+    if user.credits > 0:
+        cover_letter_text = gpt_generate_letter(cover_letter_schema)
+        add_user_credit(session, user.id, -1)
+        session.commit()
+        return CoverLetterSchema(
+            text=cover_letter_text,
+            tone=cover_letter_schema.tone,
+            language=cover_letter_schema.language,
+        )
+    return {"error": "not enough credits"}
