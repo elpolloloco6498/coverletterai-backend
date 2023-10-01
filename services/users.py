@@ -5,7 +5,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
 from models.users import User
-from shemas.users import UserSchema
+from shemas.users import CreateUserSchema
 
 
 class UserAlreadyExists(Exception):
@@ -31,7 +31,7 @@ def get_user(session: Session, id: str | None = None, name: str | None = None, e
         return False
 
 
-def upsert_user(session: Session, user_schema: UserSchema):
+def upsert_user(session: Session, user_schema: CreateUserSchema) -> User | None:
     if not get_user(session, user_schema.id):
         user = User(**user_schema.dict())
         session.add(user)
@@ -60,3 +60,5 @@ def supply_credits(session: Session, user_id, product_id) -> None:
         "product3": 20,
     }
     add_user_credit(session, user_id, product_credits[product_id])
+
+

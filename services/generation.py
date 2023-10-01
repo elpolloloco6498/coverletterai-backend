@@ -1,8 +1,14 @@
+import datetime
+
 import openai
 from sqlalchemy.orm import Session
 
+from services.letters import add_letter
+from services.parsing import parse_data_job_offer
 from services.users import get_user, add_user_credit
 from shemas.coverletter import CreateCoverLetterSchema, CoverLetterSchema, Tone, Language
+from shemas.letters import CreateLetterSchema
+
 # os get env
 openai.api_key = "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"
 
@@ -39,10 +45,22 @@ def gpt_generate_letter(cover_letter_schema: CreateCoverLetterSchema):
         You are a cover letter writing expert.
         Your job is to write a cover letter based on the resume of the user and a job offer description.
         You will respond to the job offer by showing that your skills and qualities matches with the job.
-        If a required skill is not present in the resume you can say that you are a fast learner and that you will be excited about learning a new skill.
-        The user will provide you with a resume and a job offer.
-        The letter should be no more than one page.
-        Limit the cover letter to four paragraphs.
+        This is how I want you to structure the cover letter, you have to following this writing method:
+        - start with a greeting
+        - In the first paragraph, mention the job title you're applying for and where you saw the position posting. 
+        Explain your interest in the role and company to show you've done your research. 
+        The first section of your cover letter is also the first impression the reader will have of you, so it's important to appeal to that person quickly and succinctly.
+        - Your second paragraph should be a brief overview of your background as it relates to the position. 
+        Include key achievements, skills and specialties that make you particularly suited to the position.
+        Focus on one or two and provide specific details about your success, including measurable impacts you made.
+        Pay close attention to keywords listed in the job description and include those you identify with in the body of your cover letter. 
+        You should only include information about your most recent professional experiences.
+        - The closing paragraph should focus on another key achievement or skill relevant to the position.
+        Instead of repeating details from your resume, summarize a specific story or anecdote that displays you're right for the role.
+        If you're changing careers, this is a good opportunity to talk about transferable skills or relatable experiences from your career.
+        - You should end your cover letter with a paragraph summarizing why you are applying for the role and why you would be a great fit.
+        Keep the cover letter conclusion brief and explain that you look forward to the employer's response about possible next steps.
+        End with your signature at the bottom.
         Do not include the address of the recipient and sender.
         Do not include the date.
         """
@@ -66,6 +84,19 @@ def generate_cover_letter(session: Session, cover_letter_schema: CreateCoverLett
     user = get_user(session, id=cover_letter_schema.user_id)
     if user.credits > 0:
         cover_letter_text = gpt_generate_letter(cover_letter_schema)
+        # extract job data from resume text
+        extract_job_data = parse_data_job_offer(cover_letter_schema.job_text)
+        print(extract_job_data)
+        letter_schema = CreateLetterSchema(
+            company_name=extract_job_data.company_name,
+            job_title=extract_job_data.job_title,
+            language=cover_letter_schema.language.value,
+            writing_style=cover_letter_schema.tone.value,
+            generation_date=datetime.date.today(),
+            text=cover_letter_text,
+        )
+        # add letter to history
+        add_letter(session, user.id, letter_schema)
         add_user_credit(session, user.id, -1)
         session.commit()
         return CoverLetterSchema(
