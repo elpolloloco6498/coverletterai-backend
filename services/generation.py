@@ -104,4 +104,4 @@ def generate_cover_letter(session: Session, cover_letter_schema: CreateCoverLett
             tone=cover_letter_schema.tone,
             language=cover_letter_schema.language,
         )
-    return {"error": "not enough credits"}
+    return {"error": "not enough credits", "error_type": "no_credits"}

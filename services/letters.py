@@ -41,3 +41,5 @@ def delete_letter(session: Session, id: int) -> Letter:
     saved_letter = letter
     session.delete(letter)
     return saved_letter
+
+

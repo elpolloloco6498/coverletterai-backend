@@ -1,10 +1,14 @@
-
+import tempfile
 
 from fastapi import APIRouter, Depends
+from fastapi.openapi.models import Response
 from sqlalchemy.orm import Session
+from starlette.responses import FileResponse
 
 from database import SessionLocal
+from models.letters import Letter
 from services.letters import delete_letter, get_letter, modify_letter
+from services.utils import text_to_pdf
 from shemas.letters import LetterSchema, UpdateLetterSchema
 
 router = APIRouter(
@@ -65,3 +69,18 @@ def modify(letter_id: int, letter_schema: UpdateLetterSchema, session: Session =
             text=letter.text,
         )
 
+
+@router.get("/download/{letter_id}")
+def download(letter_id: int, session: Session = Depends(get_db)):
+    letter: Letter = get_letter(session, letter_id)
+    pdf_buffer = text_to_pdf(letter.text)
+    filename = f"{letter.company_name}_{letter.job_title}_{letter.generation_date}.pdf"
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(pdf_buffer)
+        temp_file.seek(0)
+        # Serve the temporary file
+        return FileResponse(
+            temp_file.name,
+            media_type="application/pdf",
+            headers={"filename": filename}
+        )
