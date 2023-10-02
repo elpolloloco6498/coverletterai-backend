@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
@@ -5,7 +7,7 @@ from sqlalchemy.orm import Session
 from models.letters import Letter
 from models.users import User
 from services.users import get_user
-from shemas.letters import CreateLetterSchema
+from shemas.letters import CreateLetterSchema, UpdateLetterSchema
 
 
 def get_letter(session: Session, id: int):
@@ -23,13 +25,13 @@ def add_letter(session: Session, user_id: int, letter_schema: CreateLetterSchema
     return user
 
 
-def modify_letter(session: Session, id: int, letter_schema: CreateLetterSchema) -> Letter:
+def modify_letter(session: Session, id: int, letter_schema: UpdateLetterSchema) -> Letter:
     letter: Letter = get_letter(session, id)
     letter.company_name = letter_schema.company_name
     letter.job_title = letter_schema.job_title
     letter.language = letter_schema.language
     letter.writing_style = letter_schema.writing_style
-    letter.generation_date = letter_schema.generation_date
+    letter.generation_date = datetime.date.today()
     letter.text = letter_schema.text
     return letter
 

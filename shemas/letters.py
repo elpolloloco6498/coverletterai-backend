@@ -12,6 +12,14 @@ class CreateLetterSchema(BaseModel):
     text: str
 
 
+class UpdateLetterSchema(BaseModel):
+    company_name: str
+    job_title: str
+    language: str
+    writing_style: str
+    text: str
+
+
 class LetterSchema(CreateLetterSchema):
     id: int
     user_id: str
