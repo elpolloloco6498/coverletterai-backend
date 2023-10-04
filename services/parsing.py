@@ -6,7 +6,7 @@ from PyPDF2 import PdfReader
 from shemas.letters import JobData
 
 
-def extract_text_from_pdf(byte_file):
+def extract_text_from_pdf(byte_file) -> str:
     reader = PdfReader(byte_file)
     page = reader.pages[0]
     return page.extract_text()

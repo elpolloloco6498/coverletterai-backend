@@ -14,6 +14,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255))
     credits: Mapped[int] = mapped_column(Integer)
     letters: Mapped[list["Letter"]] = relationship("Letter", cascade="all, delete-orphan", backref="user")
+    resumes: Mapped[list["Resume"]] = relationship("Resume", cascade="all, delete-orphan", backref="user")
 
     def __repr__(self):
         return f"id: {self.id}, name: {self.name}"
