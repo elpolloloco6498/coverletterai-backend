@@ -5,6 +5,7 @@ volumes:
 services:
   proxymanager:
     image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
       - '80:80'
@@ -39,4 +40,4 @@ services:
 networks:
   default:
     external:
-      name: nginxproxymanager_default
+      name: nginxproxymanager_reverse_proxy
