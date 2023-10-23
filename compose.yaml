@@ -40,4 +40,4 @@ services:
 networks:
   default:
     external:
-      name: nginxproxymanager_reverse_proxy
+      name: reverse_proxy
