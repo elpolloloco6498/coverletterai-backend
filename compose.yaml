@@ -33,6 +33,10 @@ services:
       - 3306:3306
     volumes:
       - db-data:/app/data
-#      - ./init/init.sql:/docker-entrypoint-initdb.d/1.sql
 
     restart: always
+
+networks:
+  default:
+    external:
+      name: nginxproxymanager_default
