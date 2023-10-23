@@ -43,6 +43,5 @@ services:
     restart: always
 
 networks:
-  default:
-    external:
-      name: reverse_proxy
+  reverse_proxy:
+      external: true
