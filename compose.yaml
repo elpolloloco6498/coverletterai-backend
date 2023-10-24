@@ -14,21 +14,21 @@ services:
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
-#    networks:
-#      - reverse_proxy
+    networks:
+      - reverse_proxy
   backend:
     build:
       context: .
     container_name: api
-#    ports:
-#      - 8000:8000
+    ports:
+      - 8000:8000
     depends_on:
       - db
     volumes:
       - db-data:/app/data
     restart: always
-#    networks:
-#      - reverse_proxy
+    networks:
+      - reverse_proxy
   db:
     image: mysql
     command: --lower_case_table_names=1
@@ -41,7 +41,3 @@ services:
       - db-data:/app/data
 
     restart: always
-
-#networks:
-#  reverse_proxy:
-#      external: true
