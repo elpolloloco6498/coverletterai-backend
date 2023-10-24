@@ -14,7 +14,7 @@ services:
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
-  backend:
+  apiservice:
     build:
       context: .
     container_name: api
