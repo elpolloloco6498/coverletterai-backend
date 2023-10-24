@@ -27,6 +27,7 @@ services:
     restart: always
   db:
     image: mysql
+    container_name: mysqldb
     command: --lower_case_table_names=1
     environment:
       MYSQL_DATABASE: coverletterai
