@@ -24,4 +24,5 @@ jobs:
           git clone "git@github.com:elpolloloco6498/coverletterai-backend.git"
           cd ./coverletterai-backend
           docker compose up --force-recreate --build -d
+          alembic upgrade head
           docker image prune -f
