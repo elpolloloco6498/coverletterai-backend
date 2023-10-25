@@ -10,36 +10,37 @@ networks:
     driver: bridge
 
 services:
-#  caddy:
-#    image: caddy:2-alpine
-#    restart: unless-stopped
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    volumes:
-#      - ./data/caddy/Caddyfile:/etc/caddy/Caddyfile
-#      - ./data/caddy/data:/data # Optional
-#      - ./data/caddy/config:/config # Optional
-#    networks:
-#      - web
-#      - internal
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy/data:/data # Optional
+      - ./data/caddy/config:/config # Optional
+    networks:
+      - web
+      - internal
 
   apiservice:
-    build:
-      context: .
-    command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload && alembic upgrade head"
+    build: .
+    command: bash -c "alembic upgrade head && uvicorn main:app --reload --host 0.0.0.0 --port 8000"
     container_name: api
     depends_on:
       - db
+    ports:
+      - 8000:8000
     volumes:
       - db-data:/app/data
-    restart: always
     networks:
       - internal
+    restart: always
 
   db:
     image: mysql
-    container_name: mysqldb
+    container_name: db
     command: --lower_case_table_names=1
     environment:
       MYSQL_DATABASE: coverletterai
@@ -49,5 +50,13 @@ services:
     volumes:
       - db-data:/app/data
     restart: always
+    networks:
+      - internal
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
     networks:
       - internal

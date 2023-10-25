@@ -34,10 +34,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Copy the source code into the container.
 COPY . .
 
-#ENTRYPOINT ["./docker-entrypoint.sh"]
-
 # Expose the port that the application listens on.
 EXPOSE 8000
 
-# Run the application.
-#CMD alembic upgrade head && uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# Run the application
