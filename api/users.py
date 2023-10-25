@@ -7,7 +7,7 @@ from database import SessionLocal
 from services.users import upsert_user, get_all_users, remove_user, get_user
 from shemas.letters import LetterSchema
 from shemas.resumes import ResumeSchema
-from shemas.users import UserSchema
+from shemas.users import UserSchema, CreateUserSchema
 
 router = APIRouter(
     prefix="/users",
@@ -78,7 +78,7 @@ def get(user_id: str, session: Session = Depends(get_db)):
 
 
 @router.post("/upsert")
-def upsert(upsert_user_schema: UserSchema, session: Session = Depends(get_db)):
+def upsert(upsert_user_schema: CreateUserSchema, session: Session = Depends(get_db)):
     user = upsert_user(session, upsert_user_schema)
     if user:
         session.commit()
