@@ -27,6 +27,7 @@ services:
   apiservice:
     build:
       context: .
+    command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload && alembic upgrade head"
     container_name: api
     depends_on:
       - db
