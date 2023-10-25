@@ -19,14 +19,6 @@ WORKDIR /app
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
 ARG UID=10001
-#RUN adduser \
-#    --disabled-password \
-#    --gecos "" \
-#    --home "/nonexistent" \
-#    --shell "/sbin/nologin" \
-#    --no-create-home \
-#    --uid "${UID}" \
-#    appuser
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
@@ -34,8 +26,7 @@ ARG UID=10001
 # into this layer.
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python -m pip install -r requirements.txt \
-    alembic upgrade head
+    python -m pip install -r requirements.txt
 
 # Switch to the non-privileged user to run the application.
 #USER appuser
@@ -43,8 +34,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Copy the source code into the container.
 COPY . .
 
+#ENTRYPOINT ["./docker-entrypoint.sh"]
+
 # Expose the port that the application listens on.
 EXPOSE 8000
 
 # Run the application.
-CMD uvicorn main:app --reload --host 0.0.0.0 --port 8000
+CMD uvicorn main:app --reload --host 0.0.0.0 --port 8000 && alembic upgrade head
