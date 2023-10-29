@@ -16,7 +16,7 @@ router = APIRouter(
     prefix="/payment",
 )
 
-YOUR_DOMAIN = 'http://localhost:4200'
+YOUR_DOMAIN = 'https://coverletterai.io'
 
 product_prices = {
     "product1": "price_1NrHP9EJAnEEoeUjx3ndzZ8Z",
@@ -27,7 +27,6 @@ product_prices = {
 
 @router.post("/create-checkout-session")
 def create_checkout_session(metadata_schema: CheckoutMetadataSchema) -> str:
-    # TODO add user_id in the schema
     try:
         checkout_session = stripe.checkout.Session.create(
             line_items=[
