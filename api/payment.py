@@ -10,7 +10,7 @@ from api.users import get_db
 from services.users import supply_credits
 from shemas.product import CheckoutMetadataSchema
 
-stripe.api_key = 'sk_test_51Nqvj5EJAnEEoeUjoBc4MyFufOsTDGu7v8meUImAU0vXmc5uB1UcSJUSXCdO6xX6PpRRZ3DnYpqpqdLNZmA5ownP00aap3cXp8'
+stripe.api_key = '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'
 
 router = APIRouter(
     prefix="/payment",
