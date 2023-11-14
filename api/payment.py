@@ -55,7 +55,7 @@ def create_checkout_session(metadata_schema: CheckoutMetadataSchema) -> str:
 async def webhook(request: Request, session: Session = Depends(get_db)):
     event = None
     data = await request.body()
-    webhook_secret = "whsec_AlJUigC0NWveNR6LZLQttyidwCt4Lg1P"
+    webhook_secret = "whsec_SNiUSoyKhho24KfUAwRbxY7b3l4IBvQt"
     sig_header = request.headers["stripe-signature"]
 
     try:
