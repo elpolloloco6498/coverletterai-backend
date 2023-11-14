@@ -19,9 +19,9 @@ router = APIRouter(
 YOUR_DOMAIN = 'https://coverletterai.io'
 
 product_prices = {
-    "product1": "price_1NrHP9EJAnEEoeUjx3ndzZ8Z",
-    "product2": "price_1NqvpcEJAnEEoeUjktOzZrIr",
-    "product3": "price_1NrHPrEJAnEEoeUjI32rFMbs",
+    "product1": "price_1OCSwdEJAnEEoeUj9FBd2pwU",
+    "product2": "price_1OCSz5EJAnEEoeUjaImL4SYc",
+    "product3": "price_1OCT0REJAnEEoeUjf98OBSUp",
 }
 
 
